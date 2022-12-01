@@ -1,3 +1,5 @@
+import manager.Manager;
+
 import java.util.Scanner;
 
 public class Main {
@@ -12,22 +14,22 @@ public class Main {
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    manager.showAllTasks();
+                    manager.showAllObjects();
                     break;
                 case 2:
-                    manager.deleteAllTasks();
+                    manager.deleteAllObjects();
                     break;
                 case 3:
-                    manager.showTaskById();
+                    manager.showObjectById();
                     break;
                 case 4:
-                    manager.createTask();
+                    manager.createObject();
                     break;
                 case 5:
-                    manager.updateTask();
+                    manager.updateObject();
                     break;
                 case 6:
-                    manager.removeTaskById();
+                    manager.removeObjectById();
                     break;
                 case 7:
                     manager.showEpicById();

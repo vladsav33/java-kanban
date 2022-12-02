@@ -1,55 +1,57 @@
 import manager.Manager;
-
-import java.util.Scanner;
+import task.Status;
+import task.Task;
+import task.SubTask;
 
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Manager manager = new Manager();
-        manager.makeTest();
+        manager.createTask("Уборка", "Подмести");
+        manager.createTask("Уборка", "Помыть пол");
+        manager.createEpic("Ремонт", "Обновить ремонт");
+        manager.createSubtask("Покупки", "Купить краску", 3);
+        manager.createSubtask("Покупки", "Купить кисточку", 3);
+        manager.createEpic("Купить машину", "Новый кроссовер");
+        manager.createSubtask("Объявления", "Посмотреть объявления", 6);
 
-        while (true) {
-            printMenu();
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1:
-                    manager.showAllObjects();
-                    break;
-                case 2:
-                    manager.deleteAllObjects();
-                    break;
-                case 3:
-                    manager.showObjectById();
-                    break;
-                case 4:
-                    manager.createObject();
-                    break;
-                case 5:
-                    manager.updateObject();
-                    break;
-                case 6:
-                    manager.removeObjectById();
-                    break;
-                case 7:
-                    manager.showEpicById();
-                    break;
-                case 0:
-                    return;
-            }
-        }
-    }
+        manager.showAllTasks();
+        manager.showAllEpics();
+        manager.showAllSubtasks();
 
-    public static void printMenu() {
-        System.out.println("1. Показать все задачи");
-        System.out.println("2. Удалить все задачи");
-        System.out.println("3. Показать задачу по идентификатору");
-        System.out.println("4. Создать новую задачу");
-        System.out.println("5. Обновить задачу");
-        System.out.println("6. Удалить задачу по идентификатору");
-        System.out.println("7. Показать все подзадачи эпика");
-        System.out.println("0. Выход");
-        System.out.println("----------------------------------------------------");
-        System.out.println("Выберите необходимое действие");
+        System.out.println("-------------------------------------------------------------");
+
+        Task task = manager.showTaskById(1);
+        task.setStatus(Status.DONE);
+        manager.updateTask(task);
+
+        task = manager.showTaskById(2);
+        task.setStatus(Status.IN_PROGRESS);
+        manager.updateTask(task);
+
+        SubTask subTask = manager.showSubtaskById(4);
+        subTask.setStatus(Status.NEW);
+        manager.updateSubtask(subTask);
+
+        subTask = manager.showSubtaskById(5);
+        subTask.setStatus(Status.IN_PROGRESS);
+        manager.updateSubtask(subTask);
+
+        subTask = manager.showSubtaskById(7);
+        subTask.setStatus(Status.DONE);
+        manager.updateSubtask(subTask);
+
+        manager.showAllTasks();
+        manager.showAllEpics();
+        manager.showAllSubtasks();
+
+        System.out.println("-------------------------------------------------------------");
+
+        manager.removeEpicById(6);
+        manager.removeTaskById(2);
+
+        manager.showAllTasks();
+        manager.showAllEpics();
+        manager.showAllSubtasks();
     }
 }

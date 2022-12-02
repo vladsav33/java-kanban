@@ -1,21 +1,38 @@
 package task;
 
-public class Task {
-    public int id;
-    public String name;
-    public String description;
-    public Status status;
+import manager.Manager;
 
-    public Task(int id, String name, String description) {
-        this.id = id;
+public class Task {
+    protected int id;
+    protected String name;
+    protected String description;
+    protected Status status;
+
+    public Task(String name, String description) {
+        this.id = Manager.nextId();
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
     }
 
-    public Task(int id, String name, String description, Status status) {
-        this(id, name, description);
+    public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

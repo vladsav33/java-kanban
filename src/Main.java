@@ -21,6 +21,10 @@ public class Main {
 
         System.out.println("-------------------------------------------------------------");
 
+        manager.getAllEpicById(manager.showEpicById(3));
+
+        System.out.println("-------------------------------------------------------------");
+
         Task task = manager.showTaskById(1);
         task.setStatus(Status.DONE);
         manager.updateTask(task);

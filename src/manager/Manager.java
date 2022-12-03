@@ -1,8 +1,8 @@
 package manager;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import task.*;
 
 public class Manager {
@@ -10,14 +10,12 @@ public class Manager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, SubTask> subTasks;
-    Scanner scanner;
 
     public Manager() {
         id = 0;
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
-        scanner = new Scanner(System.in);
     }
 
     public static int nextId() {
@@ -39,11 +37,7 @@ public class Manager {
             return null;
         }
         System.out.println("Идентификатор: " + id + " Эпик: " + epic);
-        if (epic.getSubTasks() != null) {
-            for (Integer i : epic.getSubTasks()) {
-                showSubtaskById(i);
-            }
-        }
+
         return epic;
     }
 
@@ -162,11 +156,13 @@ public class Manager {
     }
 
 
-    public Epic showEpicById() {
-        System.out.println("Введите идентификатор эпика:");
-        int id = scanner.nextInt();
-        Epic epic = showEpicById(id);
-        return epic;
+    public ArrayList<SubTask> getAllEpicById(Epic epic) {
+        ArrayList<SubTask> listSubTasks = new ArrayList<>();
+        for (int idSubTask : epic.getSubTasks()) {
+            listSubTasks.add(subTasks.get(idSubTask));
+            System.out.println(subTasks.get(idSubTask));
+        }
+        return listSubTasks;
     }
 
     public void updateStatus(int epicId) {

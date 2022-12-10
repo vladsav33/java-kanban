@@ -1,52 +1,59 @@
 package manager;
 
-import java.lang.reflect.Array;
+import task.Epic;
+import task.Status;
+import task.SubTask;
+import task.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import task.*;
 
-public class Manager {
-    private static int id;
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, SubTask> subTasks;
+public class InMemoryTaskManager implements TaskManager {
+    static int id;
+    HashMap<Integer, Task> tasks;
+    HashMap<Integer, Epic> epics;
+    HashMap<Integer, SubTask> subTasks;
+    InMemoryHistoryManager historyManager;
 
-    public Manager() {
+    public InMemoryTaskManager() {
         id = 0;
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
+        historyManager = new InMemoryHistoryManager();
     }
 
     public static int nextId() {
         return ++id;
     }
 
-    public Task showTaskById(int id) {
+    public Task getTask(int id) {
         Task task = tasks.get(id);
         if (task == null) {
             return null;
         }
         System.out.println("Идентификатор: " + id + " Задача: " + task);
+        historyManager.add(task);
         return task;
     }
 
-    public Epic showEpicById(int id) {
+    public Epic getEpic(int id) {
         Epic epic = epics.get(id);
         if (epic == null) {
             return null;
         }
         System.out.println("Идентификатор: " + id + " Эпик: " + epic);
-
+        historyManager.add(epic);
         return epic;
     }
 
-    public SubTask showSubtaskById(int id) {
+    public SubTask getSubtask(int id) {
         SubTask subTask = subTasks.get(id);
         if (subTask == null) {
             return null;
         }
         System.out.println("Идентификатор: " + id + " Подзадача: " + subTask);
+        historyManager.add(subTask);
         return subTask;
     }
 
@@ -179,5 +186,9 @@ public class Manager {
             }
         }
         epics.get(epicId).setStatus(status);
+    }
+
+    public void showHistory() {
+        historyManager.getHistory();
     }
 }

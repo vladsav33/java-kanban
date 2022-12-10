@@ -1,6 +1,6 @@
 package task;
 
-import manager.Manager;
+import manager.InMemoryTaskManager;
 
 public class Task {
     protected int id;
@@ -9,7 +9,7 @@ public class Task {
     protected Status status;
 
     public Task(String name, String description) {
-        this.id = Manager.nextId();
+        this.id = InMemoryTaskManager.nextId();
         this.name = name;
         this.description = description;
         this.status = Status.NEW;

@@ -1,12 +1,12 @@
-import manager.Manager;
-import task.Status;
+import manager.Managers;
+import manager.TaskManager;
 import task.Task;
 import task.SubTask;
 
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
         manager.createTask("Уборка", "Подмести");
         manager.createTask("Уборка", "Помыть пол");
         manager.createEpic("Ремонт", "Обновить ремонт");
@@ -15,47 +15,20 @@ public class Main {
         manager.createEpic("Купить машину", "Новый кроссовер");
         manager.createSubtask("Объявления", "Посмотреть объявления", 6);
 
-        manager.showAllTasks();
-        manager.showAllEpics();
-        manager.showAllSubtasks();
 
         System.out.println("-------------------------------------------------------------");
 
-        manager.getAllEpicById(manager.showEpicById(3));
+        manager.getAllEpicById(manager.getEpic(3));
+
+        Task task = manager.getTask(1);
+        task = manager.getTask(2);
+
+        SubTask subTask = manager.getSubtask(4);
+        subTask = manager.getSubtask(5);
+        subTask = manager.getSubtask(7);
 
         System.out.println("-------------------------------------------------------------");
 
-        Task task = manager.showTaskById(1);
-        task.setStatus(Status.DONE);
-        manager.updateTask(task);
-
-        task = manager.showTaskById(2);
-        task.setStatus(Status.IN_PROGRESS);
-        manager.updateTask(task);
-
-        SubTask subTask = manager.showSubtaskById(4);
-        subTask.setStatus(Status.NEW);
-        manager.updateSubtask(subTask);
-
-        subTask = manager.showSubtaskById(5);
-        subTask.setStatus(Status.IN_PROGRESS);
-        manager.updateSubtask(subTask);
-
-        subTask = manager.showSubtaskById(7);
-        subTask.setStatus(Status.DONE);
-        manager.updateSubtask(subTask);
-
-        manager.showAllTasks();
-        manager.showAllEpics();
-        manager.showAllSubtasks();
-
-        System.out.println("-------------------------------------------------------------");
-
-        manager.removeEpicById(6);
-        manager.removeTaskById(2);
-
-        manager.showAllTasks();
-        manager.showAllEpics();
-        manager.showAllSubtasks();
+        manager.showHistory();
     }
 }

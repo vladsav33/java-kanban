@@ -6,21 +6,23 @@ import task.SubTask;
 import task.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    static int id;
-    HashMap<Integer, Task> tasks;
-    HashMap<Integer, Epic> epics;
-    HashMap<Integer, SubTask> subTasks;
-    InMemoryHistoryManager historyManager;
+    private static int id;
+    final private Map<Integer, Task> tasks;
+    final private Map<Integer, Epic> epics;
+    final private Map<Integer, SubTask> subTasks;
+    final private HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         id = 0;
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
-        historyManager = new InMemoryHistoryManager();
+        historyManager = Managers.getDefaultHistory();
     }
 
     public static int nextId() {
@@ -101,16 +103,16 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public ArrayList<Task> showAllTasks() {
-        ArrayList<Task> result = new ArrayList<>(tasks.values());
+    public List<Task> showAllTasks() {
+        List<Task> result = new ArrayList<>(tasks.values());
         for (Task task : result) {
             System.out.println("Идентификатор: " + task.getId() + " Задача: " + task);
         }
         return result;
     }
 
-    public ArrayList<Epic> showAllEpics() {
-        ArrayList<Epic> result = new ArrayList<>(epics.values());
+    public List<Epic> showAllEpics() {
+        List<Epic> result = new ArrayList<>(epics.values());
         Task task;
         for (Epic epic : result) {
             System.out.println("Идентификатор: " + epic.getId() + " Эпик: " + epic);
@@ -118,8 +120,8 @@ public class InMemoryTaskManager implements TaskManager {
         return result;
     }
 
-    public ArrayList<SubTask> showAllSubtasks() {
-        ArrayList<SubTask> result = new ArrayList<>(subTasks.values());
+    public List<SubTask> showAllSubtasks() {
+        List<SubTask> result = new ArrayList<>(subTasks.values());
         for (SubTask subTask : result) {
             System.out.println("Идентификатор: " + subTask.getId() + " Подзадача: " + subTask);
         }
@@ -163,8 +165,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-    public ArrayList<SubTask> getAllEpicById(Epic epic) {
-        ArrayList<SubTask> listSubTasks = new ArrayList<>();
+    public List<SubTask> getAllEpicById(Epic epic) {
+        List<SubTask> listSubTasks = new ArrayList<>();
         for (int idSubTask : epic.getSubTasks()) {
             listSubTasks.add(subTasks.get(idSubTask));
             System.out.println(subTasks.get(idSubTask));
@@ -173,7 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void updateStatus(int epicId) {
-        ArrayList<Integer> listSubTasks = epics.get(epicId).getSubTasks();
+        List<Integer> listSubTasks = epics.get(epicId).getSubTasks();
         if (listSubTasks == null || listSubTasks.isEmpty()) {
             epics.get(epicId).setStatus(Status.NEW);
             return;

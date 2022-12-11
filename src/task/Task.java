@@ -3,9 +3,9 @@ package task;
 import manager.InMemoryTaskManager;
 
 public class Task {
-    protected int id;
-    protected String name;
-    protected String description;
+    final protected int id;
+    final protected String name;
+    final protected String description;
     protected Status status;
 
     public Task(String name, String description) {
@@ -25,14 +25,6 @@ public class Task {
 
     public int getId() {
         return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

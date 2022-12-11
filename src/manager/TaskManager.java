@@ -1,6 +1,6 @@
 package manager;
 
-import java.util.ArrayList;
+import java.util.List;
 import task.*;
 
 public interface TaskManager {
@@ -16,9 +16,9 @@ public interface TaskManager {
     void removeEpicById(int id);
     void removeSubtaskById(int id);
 
-    ArrayList<Task> showAllTasks();
-    ArrayList<Epic> showAllEpics();
-    ArrayList<SubTask> showAllSubtasks();
+    List<Task> showAllTasks();
+    List<Epic> showAllEpics();
+    List<SubTask> showAllSubtasks();
 
     Task createTask(String name, String description);
     Epic createEpic(String name, String description);
@@ -28,7 +28,7 @@ public interface TaskManager {
     Task updateEpic(Epic epic);
     Task updateSubtask(SubTask subTask);
 
-    ArrayList<SubTask> getAllEpicById(Epic epic);
+    List<SubTask> getAllEpicById(Epic epic);
 
     void updateStatus(int epicId);
 

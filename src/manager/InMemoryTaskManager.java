@@ -79,6 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
         Task task = tasks.remove(id);
         if (task != null) {
             System.out.println("Задача с идентификатором " + id + " удалена");
+            historyManager.remove(id);
         }
     }
 
@@ -88,9 +89,11 @@ public class InMemoryTaskManager implements TaskManager {
             for (int subTaskId : epic.getSubTasks()) {
                 subTasks.remove(subTaskId);
                 removeSubtaskById(subTaskId);
+                historyManager.remove(subTaskId);
             }
             System.out.println("Задача с идентификатором " + id + " удалена");
             epics.remove(id);
+            historyManager.remove(id);
         }
     }
 
@@ -100,6 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Задача с идентификатором " + id + " удалена");
             epics.get(subTask.getEpicId()).removeSubtask(id);
             updateSubtask(subTask);
+            historyManager.remove(id);
         }
     }
 

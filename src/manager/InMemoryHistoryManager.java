@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
-//    final private static int HISTORY_SIZE = 10;
     final private CustomLinkedList<Task> history;
     final private Map<Integer, Node> mapTask = new HashMap<>();
 
@@ -15,9 +14,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         history = new CustomLinkedList<>();
     }
     public void add(Task task) {
-//        if (history.size() == HISTORY_SIZE) {
-//            history.removeFirst();
-//        }
         history.linkLast(task);
     }
 

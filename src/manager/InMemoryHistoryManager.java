@@ -1,4 +1,4 @@
-package manager;
+    package manager;
 
 import task.Task;
 import java.util.List;
@@ -7,12 +7,13 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    final private CustomLinkedList<Task> history;
-    final private Map<Integer, Node> mapTask = new HashMap<>();
+    private final CustomLinkedList<Task> history;
+    private final static Map<Integer, Node> mapTask = new HashMap<>();
 
     public InMemoryHistoryManager() {
         history = new CustomLinkedList<>();
     }
+
     public void add(Task task) {
         history.linkLast(task);
     }

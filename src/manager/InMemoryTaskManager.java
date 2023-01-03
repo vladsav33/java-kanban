@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private static int id;
-    final private Map<Integer, Task> tasks;
-    final private Map<Integer, Epic> epics;
-    final private Map<Integer, SubTask> subTasks;
-    final private HistoryManager historyManager;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Epic> epics;
+    private final Map<Integer, SubTask> subTasks;
+    private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         id = 0;
@@ -117,7 +117,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     public List<Epic> showAllEpics() {
         List<Epic> result = new ArrayList<>(epics.values());
-        Task task;
         for (Epic epic : result) {
             System.out.println("Идентификатор: " + epic.getId() + " Эпик: " + epic);
         }

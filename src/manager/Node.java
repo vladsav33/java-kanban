@@ -17,10 +17,6 @@ public class Node {
         return task;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public Node getNext() {
         return next;
     }
@@ -37,5 +33,3 @@ public class Node {
         this.prev = prev;
     }
 }
-
-

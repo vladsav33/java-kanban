@@ -28,10 +28,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public List<Task> getHistory() {
         List<Task> listHistory = history.getTasks();
-        for (Task item : listHistory) {
-            System.out.print(item.getId() + " ");
-        }
-        System.out.print("\n");
         return listHistory;
     }
 

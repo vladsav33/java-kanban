@@ -9,54 +9,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    public File file;
+public class FileBackedTasksManager extends InMemoryTaskManager {
+    private File file;
     public FileBackedTasksManager(File file) {
         this.file = file;
-    }
-
-    public static void main(String[] args) {
-        final String CONFIG_FILE = "current.cfg";
-        TaskManager manager = new FileBackedTasksManager(new File(CONFIG_FILE));
-
-        manager.createTask("Уборка", "Подмести");
-        manager.createTask("Уборка", "Помыть пол");
-        manager.createEpic("Ремонт", "Обновить ремонт");
-        manager.createSubtask("Покупки", "Купить краску", 3);
-        manager.createSubtask("Покупки", "Купить кисточку", 3);
-        manager.createSubtask("Объявления", "Посмотреть объявления", 3);
-        manager.createEpic("Купить машину", "Новый кроссовер");
-
-        System.out.println("-------------------------------------------------------------");
-
-        manager.getAllEpicById(manager.getEpic(3));
-        manager.showHistory();
-
-        Task task = manager.getTask(1);
-        manager.showHistory();
-        task = manager.getTask(2);
-        task = manager.getTask(1);
-        manager.showHistory();
-
-        SubTask subTask = manager.getSubtask(4);
-        manager.showHistory();
-        subTask = manager.getSubtask(5);
-        manager.showHistory();
-        subTask = manager.getSubtask(6);
-        manager.showHistory();
-
-        Epic epic = manager.getEpic(3);
-        manager.showHistory();
-        epic = manager.getEpic(7);
-        manager.showHistory();
-
-        System.out.println("----------Loaded from config file-----------------------------");
-        manager = loadFromFile(new File(CONFIG_FILE));
-        manager.showAllTasks();
-        manager.showAllEpics();
-        manager.showAllSubtasks();
-        manager.showHistory();
-        System.out.println("-------------------------------------------------------------");
     }
 
     public void save() {
@@ -73,7 +29,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 Files.writeString(file.toPath(), subTask.toString() + "\n", StandardOpenOption.APPEND);
             }
             Files.writeString(file.toPath(), "\n" + historyToString(historyManager), StandardOpenOption.APPEND);
-        } catch (IOException e) {
+        } catch (IOException ioException) {
             throw new ManagerSaveException();
         }
     }
@@ -160,15 +116,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public static String historyToString(HistoryManager manager) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         for (Task item : manager.getHistory()) {
-            result += item.getId() + ",";
+            result.append(item.getId() + ",");
         }
-        if (!result.isEmpty()) {
-            result = result.substring(0, result.length() - 1);
+        if (result.length() > 0) {
+            result.deleteCharAt(result.length() - 1);
         }
-        return result;
+        return result.toString();
     }
 
     public static List<Integer> historyFromString(String value) {

@@ -1,13 +1,17 @@
-import manager.Managers;
+import manager.FileBackedTasksManager;
 import manager.TaskManager;
 import task.Task;
 import task.SubTask;
 import task.Epic;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        final String configFile = "current.cfg";
+        TaskManager manager = new FileBackedTasksManager(new File(configFile));
+
         manager.createTask("Уборка", "Подмести");
         manager.createTask("Уборка", "Помыть пол");
         manager.createEpic("Ремонт", "Обновить ремонт");
@@ -39,14 +43,12 @@ public class Main {
         epic = manager.getEpic(7);
         manager.showHistory();
 
-        System.out.println("-------------------------------------------------------------");
-
-        manager.removeTaskById(2);
+        System.out.println("----------Loaded from config file-----------------------------");
+        manager = FileBackedTasksManager.loadFromFile(new File(configFile));
+        manager.showAllTasks();
+        manager.showAllEpics();
+        manager.showAllSubtasks();
         manager.showHistory();
-
-        manager.removeEpicById(3);
-        manager.showHistory();
-
         System.out.println("-------------------------------------------------------------");
     }
 }

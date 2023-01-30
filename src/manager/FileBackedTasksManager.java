@@ -6,8 +6,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO Добавить тесты для новых полей
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private File file;
@@ -18,7 +23,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void save() {
         try {
             Files.writeString(file.toPath(), "id,type,name,status,description,epic\n",
-                    StandardOpenOption.TRUNCATE_EXISTING);
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             for (Task task : tasks.values()) {
                 Files.writeString(file.toPath(), task.toString() + "\n", StandardOpenOption.APPEND);
             }
@@ -28,8 +33,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (SubTask subTask : subTasks.values()) {
                 Files.writeString(file.toPath(), subTask.toString() + "\n", StandardOpenOption.APPEND);
             }
-            Files.writeString(file.toPath(), "\n" + historyToString(historyManager), StandardOpenOption.APPEND);
+            Files.writeString(file.toPath(), "\n" + historyToString(historyManager) + " ", StandardOpenOption.APPEND);
         } catch (IOException ioException) {
+            ioException.printStackTrace();
             throw new ManagerSaveException();
         }
     }
@@ -115,7 +121,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return task;
     }
 
-    public static String historyToString(HistoryManager manager) {
+    private static String historyToString(HistoryManager manager) {
         StringBuilder result = new StringBuilder();
 
         for (Task item : manager.getHistory()) {
@@ -127,12 +133,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return result.toString();
     }
 
-    public static List<Integer> historyFromString(String value) {
+    private static List<Integer> historyFromString(String value) {
         String[] elements = value.split(",");
         List<Integer> list = new ArrayList<>();
         InMemoryTaskManager.historyManager = new InMemoryHistoryManager();
 
         for (String item : elements) {
+            item = item.trim();
             if (InMemoryTaskManager.tasks.containsKey(Integer.parseInt(item))) {
                 list.add(Integer.parseInt(item));
                 historyManager.add(InMemoryTaskManager.tasks.get(Integer.parseInt(item)));
@@ -155,25 +162,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             String[] line = fileContent.split("\n");
             for (int lineNo = 1; lineNo < line.length - 2; lineNo++) {
                 String[] elements = line[lineNo].split(",");
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 switch (Type.valueOf(elements[1])) {
                     case TASK:
                         Task task = new Task(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                                elements[3], elements[4]);
+                                elements[3], elements[4], elements[5].equals("null") ? null : LocalTime.parse(elements[5], timeFormatter),
+                                elements[6].equals("null") ? null : Duration.parse(elements[6]));
                         tasks.put(task.getId(), task);
                         break;
                     case EPIC:
                         Epic epic = new Epic(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                                elements[3], elements[4]);
+                                elements[3], elements[4], elements[5].equals("null") ? null : LocalTime.parse(elements[5], timeFormatter),
+                                elements[6].equals("null") ? null : LocalTime.parse(elements[6], timeFormatter));
                         epics.put(epic.getId(), epic);
                         break;
                     case SUBTASK:
                         SubTask subTask = new SubTask(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                                elements[3], elements[4], Integer.parseInt(elements[5]));
+                                elements[3], elements[4], Integer.parseInt(elements[5]),
+                                elements[6].equals("null") ? null : LocalTime.parse(elements[6], timeFormatter),
+                                elements[7].equals("null") ? null : Duration.parse(elements[7]));
                         subTasks.put(subTask.getId(), subTask);
                         break;
                 }
             }
-            historyFromString(line[line.length - 1]);
+            if (line.length > 1 && line[line.length - 1].length() > 1) {
+                historyFromString(line[line.length - 1]);
+            }
         } catch (IOException e) {
             throw new ManagerSaveException();
         }

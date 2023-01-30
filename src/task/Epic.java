@@ -1,35 +1,36 @@
 package task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalTime;
 
 public class Epic extends Task {
-    final private List<Integer> subTasks;
+    LocalTime endTime;
+
+    @Override
+    public String toString() {
+        return id + "," + type + "," + status + "," + name + "," + description + "," + startTime + "," + endTime;
+    }
+
+    @Override
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
 
     public Epic(String name, String description) {
         super(name, description);
-        subTasks = new ArrayList<>();
         this.type = Type.EPIC;
     }
 
     public Epic(int id, Type type, Status status, String name, String description) {
         super(id, type, status, name, description);
-        subTasks = new ArrayList<>();
     }
 
-//    public void addSubtask(int subtaskId) {
-//        subTasks.add(subtaskId);
-//    }
-//
-//    public void removeSubtask(int subtaskId) {
-//        subTasks.remove((Integer) subtaskId);
-//    }
-//
-//    public List<Integer> getSubTasks() {
-//        return subTasks;
-//    }
-//
-//    public void removeSubTasks() {
-//        subTasks.clear();
-//    }
+    public Epic(int id, Type type, Status status, String name, String description, LocalTime startTime, LocalTime endTime) {
+        super(id, type, status, name, description);
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

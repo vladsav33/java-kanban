@@ -1,46 +1,70 @@
 import manager.FileBackedTasksManager;
-import manager.TaskManager;
-import task.Task;
-import task.SubTask;
-import task.Epic;
+import task.*;
 
 import java.io.File;
+import java.time.LocalTime;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
         final String configFile = "current.cfg";
-        TaskManager manager = new FileBackedTasksManager(new File(configFile));
+        FileBackedTasksManager manager = new FileBackedTasksManager(new File(configFile));
 
         manager.createTask("Уборка", "Подмести");
+        Task task = new Task(1, Type.TASK, Status.NEW, "Уборка", "Подмести");
+        task.setStartTime(LocalTime.of(19,10));
+        manager.updateTask(task);
+
         manager.createTask("Уборка", "Помыть пол");
+        task = new Task(2, Type.TASK, Status.NEW, "Уборка", "Помыть пол");
+        task.setStartTime(LocalTime.of(19,30));
+        manager.updateTask(task);
+
+        manager.createTask("Уборка", "Помыть стены");
+        task = new Task(3, Type.TASK, Status.NEW, "Уборка", "Помыть стены");
+        task.setStartTime(LocalTime.of(19,20));
+        manager.updateTask(task);
+
         manager.createEpic("Ремонт", "Обновить ремонт");
-        manager.createSubtask("Покупки", "Купить краску", 3);
-        manager.createSubtask("Покупки", "Купить кисточку", 3);
-        manager.createSubtask("Объявления", "Посмотреть объявления", 3);
+        manager.createSubtask("Покупки", "Купить краску", 4);
+        manager.createSubtask("Покупки", "Купить кисточку", 4);
+        manager.createSubtask("Объявления", "Посмотреть объявления", 4);
         manager.createEpic("Купить машину", "Новый кроссовер");
+
+        SubTask subTsk = new SubTask(5, Type.SUBTASK, Status.DONE, "Покупки", "Купить краску", 4);
+        manager.updateSubtask(subTsk);
+        subTsk = new SubTask(6, Type.SUBTASK, Status.DONE, "Покупки", "Купить кисточку", 4);
+        manager.updateSubtask(subTsk);
+        subTsk = new SubTask(7, Type.SUBTASK, Status.DONE, "Объявления", "Посмотреть объявления", 4);
+        manager.updateSubtask(subTsk);
+
+        List<Task> list = manager.getPrioritizedTasks();
+        for (Task taskInList : list) {
+            System.out.println(taskInList.toString());
+        }
 
         System.out.println("-------------------------------------------------------------");
 
-        manager.getAllEpicById(manager.getEpic(3));
+        manager.getAllEpicById(manager.getEpic(4));
         manager.showHistory();
 
-        Task task = manager.getTask(1);
+        manager.getTask(1);
         manager.showHistory();
-        task = manager.getTask(2);
-        task = manager.getTask(1);
-        manager.showHistory();
-
-        SubTask subTask = manager.getSubtask(4);
-        manager.showHistory();
-        subTask = manager.getSubtask(5);
-        manager.showHistory();
-        subTask = manager.getSubtask(6);
+        manager.getTask(2);
+        manager.getTask(1);
         manager.showHistory();
 
-        Epic epic = manager.getEpic(3);
+        manager.getSubtask(5);
         manager.showHistory();
-        epic = manager.getEpic(7);
+        manager.getSubtask(6);
+        manager.showHistory();
+        manager.getSubtask(7);
+        manager.showHistory();
+
+        manager.getEpic(4);
+        manager.showHistory();
+        manager.getEpic(8);
         manager.showHistory();
 
         System.out.println("----------Loaded from config file-----------------------------");

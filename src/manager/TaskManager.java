@@ -4,6 +4,9 @@ import java.util.List;
 import task.*;
 
 public interface TaskManager {
+
+    List<Task> getPrioritizedTasks();
+
     Task getTask(int id);
     Epic getEpic(int id);
     SubTask getSubtask(int id);
@@ -29,8 +32,6 @@ public interface TaskManager {
     Task updateSubtask(SubTask subTask);
 
     List<SubTask> getAllEpicById(Epic epic);
-
-    void updateStatus(int epicId);
 
     void showHistory();
 }

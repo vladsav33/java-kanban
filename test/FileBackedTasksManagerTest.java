@@ -7,7 +7,6 @@ import task.Epic;
 import task.Task;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +21,7 @@ class FileBackupTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void saveEmptyList() {
-        // Пустой список задач
+        // Empty list of tasks
         manager.save();
         FileBackedTasksManager.loadFromFile(new File("current.cfg"));
         List<Task> listTasks = manager.showAllTasks();
@@ -31,7 +30,7 @@ class FileBackupTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void saveEmptyEpic() {
-        // Эпик без подзадач
+        // Epic without subtasks
         manager.createEpic("Ремонт", "Обновить ремонт");
         manager.save();
         FileBackedTasksManager.loadFromFile(new File("current.cfg"));
@@ -41,6 +40,7 @@ class FileBackupTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void saveLoadEmptyHistory() {
+        // Empty history - save and load
         manager.createEpic("Ремонт", "Обновить ремонт");
         manager.save();
         FileBackedTasksManager.loadFromFile(new File("current.cfg"));

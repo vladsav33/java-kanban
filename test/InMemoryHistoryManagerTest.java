@@ -22,7 +22,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addDuplicate() {
-        //Дублирование
+        // Duplicate tasks
         List<Task> list = historyManager.getHistory();
         assertEquals(list, List.of());
 
@@ -35,7 +35,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
-        //Добавление в очередь
+        // Add to history
         List<Task> list = historyManager.getHistory();
         assertEquals(list, List.of());
 
@@ -47,7 +47,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void remove() {
-        //Удаление из очереди
+        // Remove from history
         List<Task> list = new ArrayList<>();
         List<Task> listToCompare;
 
@@ -61,7 +61,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void removeFromMiddle() {
-        //Удаление задач из середины очереди
+        // Remove a task from the middle
         List<Task> list = new ArrayList<>();
         List<Task> listToCompare;
 
@@ -83,7 +83,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void removeFromBeginning() {
-        //Удаление задач из начала очереди
+        // Remove a task from the beginning
         List<Task> list = new ArrayList<>();
         List<Task> listToCompare;
 
@@ -105,7 +105,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void removeFromEnd() {
-        //Удаление задач из конца очереди
+        // Remove a task from the end
         List<Task> list = new ArrayList<>();
         List<Task> listToCompare;
 
@@ -149,7 +149,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkEmptyHistory() {
-        //Check history
+        //Check empty history
         List<Task> listToCompare = new ArrayList<>();
 
         List<Task> list = historyManager.getHistory();

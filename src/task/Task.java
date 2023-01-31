@@ -20,10 +20,6 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public Duration getDuration() {
-        return duration;
-    }
-
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
@@ -49,11 +45,6 @@ public class Task {
 
     public Task(int id, Type type, Status status, String name, String description, LocalTime startTime, Duration duration) {
         this(id, type, status, name, description);
-//        this.id = id;
-//        this.name = name;
-//        this.description = description;
-//        this.status = status;
-//        this.type = type;
         this.startTime = startTime;
         this.duration = duration;
     }
@@ -80,25 +71,5 @@ public class Task {
     @Override
     public String toString() {
         return id + "," + type + "," + status + "," + name + "," + description + "," + startTime + "," + duration;
-    }
-
-    Task fromString(String value) {
-        String[] elements = value.split(",");
-        switch (Type.valueOf(elements[1])) {
-
-            case TASK:
-                Task task = new Task(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                        elements[3], elements[4]);
-                return task;
-            case EPIC:
-                Epic epic = new Epic(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                        elements[3], elements[4]);
-                return epic;
-            case SUBTASK:
-                SubTask subTask = new SubTask(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
-                        elements[3], elements[4], Integer.parseInt(elements[5]));
-                return subTask;
-        }
-        return null;
     }
 }

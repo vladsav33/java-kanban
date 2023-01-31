@@ -11,8 +11,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-    TaskManager manager;
-    InMemoryHistoryManager historyManager;
+    private TaskManager manager;
+    private InMemoryHistoryManager historyManager;
 
     @BeforeEach
     public void BeforeEach() {
@@ -21,9 +21,9 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void add() {
-        List<Task> list;
-        list = historyManager.getHistory();
+    void addDuplicate() {
+        //Дублирование
+        List<Task> list = historyManager.getHistory();
         assertEquals(list, List.of());
 
         Epic epic = manager.createEpic("Ремонт", "Обновить ремонт");
@@ -34,7 +34,20 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    void add() {
+        //Добавление в очередь
+        List<Task> list = historyManager.getHistory();
+        assertEquals(list, List.of());
+
+        Epic epic = manager.createEpic("Ремонт", "Обновить ремонт");
+        historyManager.add(epic);
+        list = historyManager.getHistory();
+        assertEquals(list, List.of(epic));
+    }
+
+    @Test
     void remove() {
+        //Удаление из очереди
         List<Task> list = new ArrayList<>();
         List<Task> listToCompare;
 
@@ -42,10 +55,66 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task);
         list.add(task);
 
+        listToCompare = historyManager.getHistory();
+        assertEquals(list, listToCompare);
+    }
+
+    @Test
+    void removeFromMiddle() {
+        //Удаление задач из середины очереди
+        List<Task> list = new ArrayList<>();
+        List<Task> listToCompare;
+
+        Task task = manager.createTask("Задача", "Задача 1");
+        historyManager.add(task);
+        list.add(task);
         task = manager.createTask("Задача", "Задача 2");
         historyManager.add(task);
         list.add(task);
+        task = manager.createTask("Задача", "Задача 3");
+        historyManager.add(task);
+        list.add(task);
 
+        historyManager.remove(2);
+        listToCompare = historyManager.getHistory();
+        list.remove(1);
+        assertEquals(list, listToCompare);
+    }
+
+    @Test
+    void removeFromBeginning() {
+        //Удаление задач из начала очереди
+        List<Task> list = new ArrayList<>();
+        List<Task> listToCompare;
+
+        Task task = manager.createTask("Задача", "Задача 1");
+        historyManager.add(task);
+        list.add(task);
+        task = manager.createTask("Задача", "Задача 2");
+        historyManager.add(task);
+        list.add(task);
+        task = manager.createTask("Задача", "Задача 3");
+        historyManager.add(task);
+        list.add(task);
+
+        historyManager.remove(1);
+        listToCompare = historyManager.getHistory();
+        list.remove(0);
+        assertEquals(list, listToCompare);
+    }
+
+    @Test
+    void removeFromEnd() {
+        //Удаление задач из конца очереди
+        List<Task> list = new ArrayList<>();
+        List<Task> listToCompare;
+
+        Task task = manager.createTask("Задача", "Задача 1");
+        historyManager.add(task);
+        list.add(task);
+        task = manager.createTask("Задача", "Задача 2");
+        historyManager.add(task);
+        list.add(task);
         task = manager.createTask("Задача", "Задача 3");
         historyManager.add(task);
         list.add(task);
@@ -53,33 +122,37 @@ class InMemoryHistoryManagerTest {
         listToCompare = historyManager.getHistory();
         assertEquals(list, listToCompare);
 
-        //Удаление задач из очереди: из середины, начала, конца
-        historyManager.remove(2);
-        listToCompare = historyManager.getHistory();
-        list.remove(1);
-        assertEquals(list, listToCompare);
-
-        historyManager.remove(1);
-        listToCompare = historyManager.getHistory();
-        list.remove(0);
-        assertEquals(list, listToCompare);
-
         historyManager.remove(3);
         listToCompare = historyManager.getHistory();
-        list.remove(0);
+        list.remove(2);
         assertEquals(list, listToCompare);
     }
 
     @Test
     void getHistory() {
-        List<Task> list = new ArrayList<>();
-        List<Task> listToCompare;
+        //Check history
+        List<Task> listToCompare = new ArrayList<>();
 
         Task task = manager.createTask("Задача", "Задача 1");
         historyManager.add(task);
-        list.add(task);
+        listToCompare.add(task);
+        task = manager.createTask("Задача", "Задача 2");
+        historyManager.add(task);
+        listToCompare.add(task);
+        task = manager.createTask("Задача", "Задача 3");
+        historyManager.add(task);
+        listToCompare.add(task);
 
-        listToCompare = historyManager.getHistory();
+        List<Task> list = historyManager.getHistory();
+        assertEquals(list, listToCompare);
+    }
+
+    @Test
+    void checkEmptyHistory() {
+        //Check history
+        List<Task> listToCompare = new ArrayList<>();
+
+        List<Task> list = historyManager.getHistory();
         assertEquals(list, listToCompare);
     }
 }

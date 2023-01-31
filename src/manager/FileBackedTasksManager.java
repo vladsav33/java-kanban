@@ -12,10 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO Добавить тесты для новых полей
-
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private File file;
+    private final File file;
     public FileBackedTasksManager(File file) {
         this.file = file;
     }
@@ -35,8 +33,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             Files.writeString(file.toPath(), "\n" + historyToString(historyManager) + " ", StandardOpenOption.APPEND);
         } catch (IOException ioException) {
-            ioException.printStackTrace();
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Error writing to the serialization file");
         }
     }
 
@@ -125,7 +122,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         StringBuilder result = new StringBuilder();
 
         for (Task item : manager.getHistory()) {
-            result.append(item.getId() + ",");
+            result.append(item.getId()).append(",");
         }
         if (result.length() > 0) {
             result.deleteCharAt(result.length() - 1);
@@ -164,25 +161,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 String[] elements = line[lineNo].split(",");
                 DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
                 switch (Type.valueOf(elements[1])) {
-                    case TASK:
+                    case TASK -> {
                         Task task = new Task(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
                                 elements[3], elements[4], elements[5].equals("null") ? null : LocalTime.parse(elements[5], timeFormatter),
                                 elements[6].equals("null") ? null : Duration.parse(elements[6]));
                         tasks.put(task.getId(), task);
-                        break;
-                    case EPIC:
+                    }
+                    case EPIC -> {
                         Epic epic = new Epic(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
                                 elements[3], elements[4], elements[5].equals("null") ? null : LocalTime.parse(elements[5], timeFormatter),
                                 elements[6].equals("null") ? null : LocalTime.parse(elements[6], timeFormatter));
                         epics.put(epic.getId(), epic);
-                        break;
-                    case SUBTASK:
+                    }
+                    case SUBTASK -> {
                         SubTask subTask = new SubTask(Integer.parseInt(elements[0]), Type.valueOf(elements[1]), Status.valueOf(elements[2]),
                                 elements[3], elements[4], Integer.parseInt(elements[5]),
                                 elements[6].equals("null") ? null : LocalTime.parse(elements[6], timeFormatter),
                                 elements[7].equals("null") ? null : Duration.parse(elements[7]));
                         subTasks.put(subTask.getId(), subTask);
-                        break;
+                    }
                 }
             }
             if (line.length > 1 && line[line.length - 1].length() > 1) {

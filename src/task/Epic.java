@@ -3,7 +3,7 @@ package task;
 import java.time.LocalTime;
 
 public class Epic extends Task {
-    LocalTime endTime;
+    private LocalTime endTime;
 
     @Override
     public String toString() {

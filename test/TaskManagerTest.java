@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 abstract class TaskManagerTest<T extends TaskManager> {
-    T manager;
+    protected T manager;
 
     @Test
     void getTask() {
@@ -20,7 +20,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createTask("Уборка", "Подмести");
         task  = manager.getTask(1);
-        Assertions.assertTrue(task.toString().equals("1,TASK,NEW,Уборка,Подмести,null,null"));
+        Assertions.assertEquals(task.toString(), "1,TASK,NEW,Уборка,Подмести,null,null");
 
         task = manager.getTask(2);
         Assertions.assertNull(task);
@@ -33,7 +33,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.createEpic("Ремонт", "Обновить ремонт");
         epic  = manager.getEpic(1);
-        Assertions.assertTrue(epic.toString().equals("1,EPIC,NEW,Ремонт,Обновить ремонт,null,null"));
+        Assertions.assertEquals(epic.toString(), "1,EPIC,NEW,Ремонт,Обновить ремонт,null,null");
 
         epic = manager.getEpic(2);
         Assertions.assertNull(epic);
@@ -47,7 +47,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.createEpic("Ремонт", "Обновить ремонт");
         manager.createSubtask("Покупки", "Купить краску", 1);
         subTask  = manager.getSubtask(2);
-        Assertions.assertTrue(subTask.toString().equals("2,SUBTASK,NEW,Покупки,Купить краску,1,null,null"));
+        Assertions.assertEquals(subTask.toString(), "2,SUBTASK,NEW,Покупки,Купить краску,1,null,null");
 
         subTask = manager.getSubtask(3);
         Assertions.assertNull(subTask);
@@ -196,7 +196,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 LocalTime.of(17, 20), Duration.ofMinutes(20));
         manager.updateTask(task);
         String result = manager.getTask(1).toString();
-        assertTrue (result.equals("1,TASK,DONE,Уборка,Подмести,17:20,PT20M"));
+        assertEquals (result, "1,TASK,DONE,Уборка,Подмести,17:20,PT20M");
     }
 
     @Test
@@ -205,7 +205,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic(1, Type.EPIC, Status.DONE, "Ремонт", "Обновить ремонт");
         manager.updateEpic(epic);
         String result = manager.getEpic(1).toString();
-        assertTrue (result.equals("1,EPIC,DONE,Ремонт,Обновить ремонт,null,null"));
+        assertEquals (result, "1,EPIC,DONE,Ремонт,Обновить ремонт,null,null");
     }
 
     @Test
@@ -215,7 +215,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         SubTask subTask = new SubTask(2, Type.SUBTASK, Status.DONE, "Покупки", "Купить краску", 1);
         manager.updateSubtask(subTask);
         String result = manager.getSubtask(2).toString();
-        assertTrue (result.equals("2,SUBTASK,DONE,Покупки,Купить краску,1,null,null"));
+        assertEquals (result, "2,SUBTASK,DONE,Покупки,Купить краску,1,null,null");
     }
 
     @Test
@@ -231,6 +231,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void showHistory() {
+    void checkStartTimeAndDuration() {
+        manager.createTask("Уборка", "Подмести");
+        Task task = new Task(1, Type.TASK, Status.DONE, "Уборка", "Подмести",
+                LocalTime.of(17, 20), Duration.ofMinutes(20));
+        manager.updateTask(task);
+        task  = manager.getTask(1);
+        Assertions.assertEquals(task.toString(), "1,TASK,DONE,Уборка,Подмести,17:20,PT20M");
     }
 }

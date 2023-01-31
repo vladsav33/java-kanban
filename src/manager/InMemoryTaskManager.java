@@ -16,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected static Map<Integer, SubTask> subTasks;
     protected static HistoryManager historyManager;
 
-    public Set<Task> sortedSet;
+    private Set<Task> sortedSet;
 
     public InMemoryTaskManager() {
         id = 0;
@@ -24,26 +24,23 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
-        sortedSet = new TreeSet<>(new Comparator<Task>() {
-            @Override
-            public int compare(Task o1, Task o2) {
-                if (o1.getStartTime() == null && o2.getStartTime() == null) {
-                    return o1.hashCode() - o2.hashCode();
-                }
-                if (o1.getStartTime() == null) {
-                    return 1;
-                }
-                if (o2.getStartTime() == null) {
-                    return -1;
-                }
-                if (o1.getStartTime().isBefore(o2.getStartTime())) {
-                    return -1;
-                }
-                if (o1.getStartTime().isAfter(o2.getStartTime())) {
-                    return 1;
-                }
-                return 0;
+        sortedSet = new TreeSet<>((o1, o2) -> {
+            if (o1.getStartTime() == null && o2.getStartTime() == null) {
+                return o1.hashCode() - o2.hashCode();
             }
+            if (o1.getStartTime() == null) {
+                return 1;
+            }
+            if (o2.getStartTime() == null) {
+                return -1;
+            }
+            if (o1.getStartTime().isBefore(o2.getStartTime())) {
+                return -1;
+            }
+            if (o1.getStartTime().isAfter(o2.getStartTime())) {
+                return 1;
+            }
+            return 0;
         });
     }
 
@@ -61,7 +58,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (task == null) {
             return null;
         }
-        System.out.println("Идентификатор: " + id + " Задача: " + task);
         historyManager.add(task);
         return task;
     }
@@ -71,7 +67,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return null;
         }
-        System.out.println("Идентификатор: " + id + " Эпик: " + epic);
         historyManager.add(epic);
         return epic;
     }
@@ -81,7 +76,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask == null) {
             return null;
         }
-        System.out.println("Идентификатор: " + id + " Подзадача: " + subTask);
         historyManager.add(subTask);
         return subTask;
     }
@@ -121,7 +115,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             for (int subTaskId : subTasks.keySet()) {
                 if (id == subTaskId) {
-//                    subTasks.remove(subTaskId);
                     removeSubtaskById(subTaskId);
                     historyManager.remove(subTaskId);
                 }
@@ -134,7 +127,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeSubtaskById(int id) {
         SubTask subTask = subTasks.remove(id);
         if (subTask != null) {
-            System.out.println("Задача с идентификатором " + id + " удалена");
             updateStatusAndEndTime(subTask.getEpicId());
             sortedSet.remove(subTask);
             historyManager.remove(id);
@@ -143,25 +135,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     public List<Task> showAllTasks() {
         List<Task> result = new ArrayList<>(tasks.values());
-        for (Task task : result) {
-            System.out.println("Идентификатор: " + task.getId() + " Задача: " + task);
-        }
         return result;
     }
 
     public List<Epic> showAllEpics() {
         List<Epic> result = new ArrayList<>(epics.values());
-        for (Epic epic : result) {
-            System.out.println("Идентификатор: " + epic.getId() + " Эпик: " + epic);
-        }
         return result;
     }
 
     public List<SubTask> showAllSubtasks() {
         List<SubTask> result = new ArrayList<>(subTasks.values());
-        for (SubTask subTask : result) {
-            System.out.println("Идентификатор: " + subTask.getId() + " Подзадача: " + subTask);
-        }
         return result;
     }
 

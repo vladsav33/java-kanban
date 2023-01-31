@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
     final String configFile = "current.cfg";
-    TaskManager manager;
+    private TaskManager manager;
 
     @BeforeEach
     public void beforeEach() {

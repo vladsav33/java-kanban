@@ -1,15 +1,19 @@
 import manager.FileBackedTasksManager;
+import manager.HistoryManager;
+import manager.InMemoryHistoryManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Task;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FileBackedTasksManagerTest extends TaskManagerTest {
+class FileBackupTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     @BeforeEach
     public void beforeEach() {
@@ -17,16 +21,16 @@ class FileBackedTasksManagerTest extends TaskManagerTest {
     }
 
     @Test
-    void save() {
-        List<Task> listTasks;
-        FileBackedTasksManager manager = new FileBackedTasksManager(new File("current.cfg"));
-
+    void saveEmptyList() {
         // Пустой список задач
         manager.save();
         FileBackedTasksManager.loadFromFile(new File("current.cfg"));
-        listTasks = manager.showAllTasks();
-        assertEquals(listTasks, List.of());
+        List<Task> listTasks = manager.showAllTasks();
+        assertEquals(listTasks, Collections.emptyList());
+    }
 
+    @Test
+    void saveEmptyEpic() {
         // Эпик без подзадач
         manager.createEpic("Ремонт", "Обновить ремонт");
         manager.save();
@@ -36,62 +40,15 @@ class FileBackedTasksManagerTest extends TaskManagerTest {
     }
 
     @Test
-    void getTask() {
-        super.getTask();
-    }
+    void saveLoadEmptyHistory() {
+        manager.createEpic("Ремонт", "Обновить ремонт");
+        manager.save();
+        FileBackedTasksManager.loadFromFile(new File("current.cfg"));
+        Epic epic = manager.getEpic(1);
+        assertEquals(epic.toString(), "1,EPIC,NEW,Ремонт,Обновить ремонт,null,null");
 
-    @Test
-    void getEpic() {
-        super.getEpic();
-    }
-
-    @Test
-    void getSubtask() {
-        super.getSubtask();
-    }
-
-    @Test
-    void removeTaskById() {
-        super.removeTaskById();
-    }
-
-    @Test
-    void removeEpicById() {
-        super.removeEpicById();
-    }
-
-    @Test
-    void removeSubtaskById() {
-        super.removeSubtaskById();
-    }
-
-    @Test
-    void createTask() {
-        super.createTask();
-    }
-
-    @Test
-    void createEpic() {
-        super.createEpic();
-    }
-
-    @Test
-    void createSubtask() {
-        super.createSubtask();
-    }
-
-    @Test
-    void updateTask() {
-        super.updateTask();
-    }
-
-    @Test
-    void updateEpic() {
-        super.updateEpic();
-    }
-
-    @Test
-    void updateSubtask() {
-        super.updateSubtask();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        List<Task> list = historyManager.getHistory();
+        assertEquals(list, Collections.emptyList());
     }
 }

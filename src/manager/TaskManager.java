@@ -24,8 +24,12 @@ public interface TaskManager {
     List<SubTask> showAllSubtasks();
 
     Task createTask(String name, String description);
+    Task createTask(Task task);
+
     Epic createEpic(String name, String description);
+    Epic createEpic(Epic epic);
     SubTask createSubtask(String name, String description, int idEpic);
+    SubTask createSubtask(SubTask subtask);
 
     Task updateTask(Task task);
     Task updateEpic(Epic epic);
@@ -33,5 +37,5 @@ public interface TaskManager {
 
     List<SubTask> getAllEpicById(Epic epic);
 
-    void showHistory();
+    List<Task> showHistory();
 }

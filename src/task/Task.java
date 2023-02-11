@@ -11,21 +11,36 @@ public class Task {
     protected final String description;
     protected Status status;
     protected Type type;
+    public LocalTime startTime;
+    protected transient Duration duration;
 
-    public LocalTime getStartTime() {
-        return startTime;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Task task = (Task) o;
+
+        if (id != task.id) return false;
+        if (!name.equals(task.name)) return false;
+        if (!description.equals(task.description)) return false;
+        if (status != task.status) return false;
+        if (type != task.type) return false;
+        if (startTime != null ? !startTime.equals(task.startTime) : task.startTime != null) return false;
+        return duration != null ? duration.equals(task.duration) : task.duration == null;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        return result;
     }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    protected LocalTime startTime;
-    protected Duration duration;
 
     public Task(String name, String description) {
         this.id = InMemoryTaskManager.nextId();
@@ -33,6 +48,14 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.type = Type.TASK;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Task(int id, Type type, Status status, String name, String description) {
@@ -49,6 +72,17 @@ public class Task {
         this.duration = duration;
     }
 
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
     public LocalTime getEndTime() {
         if (startTime == null || duration == null) {
             return null;

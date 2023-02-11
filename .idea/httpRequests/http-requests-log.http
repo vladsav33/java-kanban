@@ -1,0 +1,29 @@
+GET http://localhost:8080/tasks
+Accept: application/json
+
+<> 2023-02-09T184917.200.txt
+
+###
+
+GET http://localhost:8080/tasks
+Accept: application/json
+
+###
+
+GET http://localhost:8080/tasks
+Accept: application/json
+
+###
+
+GET http://localhost:8080/tasks
+Accept: application/json
+
+<> 2023-02-09T182219.200.txt
+
+###
+
+GET http://localhost:80/tasks
+Accept: application/json
+
+###
+

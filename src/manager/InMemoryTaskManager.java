@@ -24,24 +24,8 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
-        sortedSet = new TreeSet<>((o1, o2) -> {
-            if (o1.getStartTime() == null && o2.getStartTime() == null) {
-                return o1.hashCode() - o2.hashCode();
-            }
-            if (o1.getStartTime() == null) {
-                return 1;
-            }
-            if (o2.getStartTime() == null) {
-                return -1;
-            }
-            if (o1.getStartTime().isBefore(o2.getStartTime())) {
-                return -1;
-            }
-            if (o1.getStartTime().isAfter(o2.getStartTime())) {
-                return 1;
-            }
-            return 0;
-        });
+        sortedSet = new TreeSet<>(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(Task::getId));
     }
 
     public static int nextId() {
@@ -159,8 +143,23 @@ public class InMemoryTaskManager implements TaskManager {
         return task;
     }
 
+    public Task createTask(Task task) {
+        if (conflictTask(task)) {
+            System.out.println("Обнаружен конфликт времени для задачи");
+            return null;
+        }
+        tasks.put(task.getId(), task);
+        sortedSet.add(task);
+        return task;
+    }
+
     public Epic createEpic(String name, String description) {
         Epic epic = new Epic(name, description);
+        epics.put(epic.getId(), epic);
+        return epic;
+    }
+
+    public Epic createEpic(Epic epic) {
         epics.put(epic.getId(), epic);
         return epic;
     }
@@ -173,6 +172,17 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subTasks.put(subTask.getId(), subTask);
         updateStatusAndEndTime(idEpic);
+        sortedSet.add(subTask);
+        return subTask;
+    }
+
+    public SubTask createSubtask(SubTask subTask) {
+        if (conflictTask(subTask)) {
+            System.out.println("Обнаружен конфликт времени для задачи");
+            return null;
+        }
+        subTasks.put(subTask.getId(), subTask);
+        updateStatusAndEndTime(subTask.getEpicId());
         sortedSet.add(subTask);
         return subTask;
     }
@@ -258,12 +268,13 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void showHistory() {
+    public List<Task> showHistory() {
         List<Task> list = historyManager.getHistory();
         for (Task item : list) {
             System.out.print(item.getId() + " ");
         }
         System.out.print("\n");
+        return list;
     }
 
     public boolean conflictTask(Task task) {

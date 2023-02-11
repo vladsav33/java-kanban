@@ -84,6 +84,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
+    public Task createTask(Task task) {
+        Task taskResult = super.createTask(task);
+        save();
+        return taskResult;
+    }
+
+    @Override
     public Epic createEpic(String name, String description) {
         Epic epic = super.createEpic(name, description);
         save();
@@ -91,10 +98,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
+    public Epic createEpic(Epic epic) {
+        Epic epicResult = super.createEpic(epic);
+        save();
+        return epicResult;
+    }
+
+    @Override
     public SubTask createSubtask(String name, String description, int idEpic) {
         SubTask subTask = super.createSubtask(name, description, idEpic);
         save();
         return subTask;
+    }
+
+    @Override
+    public SubTask createSubtask(SubTask subTask) {
+        SubTask subTaskResult = super.createSubtask(subTask);
+        save();
+        return subTaskResult;
     }
 
     @Override
@@ -118,7 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return task;
     }
 
-    private static String historyToString(HistoryManager manager) {
+    protected static String historyToString(HistoryManager manager) {
         StringBuilder result = new StringBuilder();
 
         for (Task item : manager.getHistory()) {
@@ -130,7 +151,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return result.toString();
     }
 
-    private static List<Integer> historyFromString(String value) {
+    protected static List<Integer> historyFromString(String value) {
         String[] elements = value.split(",");
         List<Integer> list = new ArrayList<>();
         InMemoryTaskManager.historyManager = new InMemoryHistoryManager();

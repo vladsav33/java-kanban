@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import http.HttpCode;
 import task.Epic;
 import task.SubTask;
 import java.io.IOException;
@@ -25,19 +26,19 @@ public class EpicGetAllHandler implements HttpHandler {
             StringBuilder result = new StringBuilder();
             try {
                 for (SubTask subTask : list) {
-                    result.append(gson.toJson(subTask) + "\n");
+                    result.append(gson.toJson(subTask)).append("\n");
                 }
             } catch (JsonSyntaxException exception) {
                 System.out.println("Incorrect JSON format");
-                httpExchange.sendResponseHeaders(400, 0);
+                httpExchange.sendResponseHeaders(HttpCode.BAD_REQUEST.getCode(), 0);
                 return;
             }
-            httpExchange.sendResponseHeaders(200, 0);
+            httpExchange.sendResponseHeaders(HttpCode.OK.getCode(), 0);
             try (OutputStream os = httpExchange.getResponseBody()) {
                 os.write(result.toString().getBytes());
             }
         } else {
-            httpExchange.sendResponseHeaders(400, 0);
+            httpExchange.sendResponseHeaders(HttpCode.BAD_REQUEST.getCode(), 0);
         }
     }
 }

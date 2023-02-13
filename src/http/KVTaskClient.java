@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 public class KVTaskClient {
     private HttpClient httpClient;
     private String apiToken;
-    private String urlString;
+    private final String urlString;
 
     public KVTaskClient(String urlString) {
         this.urlString = urlString;
@@ -62,7 +62,7 @@ public class KVTaskClient {
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         try {
             HttpResponse<String> response = httpClient.send(request, handler);
-            if (response.statusCode() == 404) {
+            if (response.statusCode() == HttpCode.NOT_FOUND.getCode()) {
                 return null;
             }
             return response.body();

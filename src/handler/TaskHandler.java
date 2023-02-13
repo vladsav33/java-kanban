@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import http.HttpCode;
 import task.Task;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +41,7 @@ public class TaskHandler implements HttpHandler {
                     taskDeleteHandler(httpExchange);
                 }
             default:
-                httpExchange.sendResponseHeaders(400, 0);
+                httpExchange.sendResponseHeaders(HttpCode.BAD_REQUEST.getCode(), 0);
         }
     }
 
@@ -49,19 +50,19 @@ public class TaskHandler implements HttpHandler {
         int taskId = Integer.parseInt(parameters.substring(3));
         Task task = manager.getTask(taskId);
         String result = taskToJson(task, httpExchange);
-        httpExchange.sendResponseHeaders(200, 0);
+        httpExchange.sendResponseHeaders(HttpCode.OK.getCode(), 0);
         try (OutputStream os = httpExchange.getResponseBody()) {
             os.write(result.getBytes());
         }
     }
 
     public static void taskDeleteHandler(HttpExchange httpExchange) throws IOException {
-        httpExchange.sendResponseHeaders(204, -1);
+        httpExchange.sendResponseHeaders(HttpCode.NO_CONTENT.getCode(), -1);
         manager.deleteAllTasks();
     }
 
     public static void taskRemoveHandler(HttpExchange httpExchange) throws IOException {
-        httpExchange.sendResponseHeaders(204, -1);
+        httpExchange.sendResponseHeaders(HttpCode.NO_CONTENT.getCode(), -1);
         String parameters = httpExchange.getRequestURI().getQuery();
         int taskId = Integer.parseInt(parameters.substring(3));
         manager.removeTaskById(taskId);
@@ -73,14 +74,14 @@ public class TaskHandler implements HttpHandler {
         StringBuilder result = new StringBuilder();
         try {
             for (Task task : list) {
-                result.append(gson.toJson(task) + "\n");
+                result.append(gson.toJson(task)).append("\n");
             }
         } catch (JsonSyntaxException exception) {
             System.out.println("Incorrect JSON format");
-            httpExchange.sendResponseHeaders(400, 0);
+            httpExchange.sendResponseHeaders(HttpCode.BAD_REQUEST.getCode(), 0);
             return;
         }
-        httpExchange.sendResponseHeaders(200, 0);
+        httpExchange.sendResponseHeaders(HttpCode.OK.getCode(), 0);
         try (OutputStream os = httpExchange.getResponseBody()) {
             os.write(result.toString().getBytes());
         }
@@ -88,7 +89,7 @@ public class TaskHandler implements HttpHandler {
 
     public static void taskAddUpdateHandler(HttpExchange httpExchange) throws IOException {
         Gson gson = createGson();
-        httpExchange.sendResponseHeaders(200, 0);
+        httpExchange.sendResponseHeaders(HttpCode.OK.getCode(), 0);
         InputStream is = httpExchange.getRequestBody();
         String jsonString = new String(is.readAllBytes());
         try {
@@ -105,11 +106,10 @@ public class TaskHandler implements HttpHandler {
     }
 
     public static Gson createGson() {
-        Gson gson = new GsonBuilder()
+        return new GsonBuilder()
                 .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .create();
-        return gson;
     }
 
     public static String taskToJson(Task task, HttpExchange httpExchange) throws IOException {
@@ -118,7 +118,7 @@ public class TaskHandler implements HttpHandler {
             return gson.toJson(task);
         } catch (JsonSyntaxException exception) {
             System.out.println("Incorrect JSON format");
-            httpExchange.sendResponseHeaders(400, 0);
+            httpExchange.sendResponseHeaders(HttpCode.BAD_REQUEST.getCode(), 0);
             return null;
         }
     }

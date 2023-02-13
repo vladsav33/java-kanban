@@ -1,7 +1,10 @@
-package manager;
+package http;
 
+import adapter.DurationAdapter;
+import adapter.LocalTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import manager.FileBackedTasksManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
@@ -16,15 +19,15 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public final KVTaskClient client;
     public HttpTaskManager(URL url) {
         super(new File("current.cfg"));
-        client = new KVTaskClient("http://localhost:8078");
+        client = new KVTaskClient(url.toString());
     }
 
     @Override
     public void save() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalTime.class, new LocalTimeAdapter());
-        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
-        Gson gson = gsonBuilder.create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .create();
         for (Task task : tasks.values()) {
             client.put(String.valueOf(task.getId()), gson.toJson(task));
         }
@@ -40,5 +43,3 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
     }
 }
-
-

@@ -1,16 +1,15 @@
-import static org.junit.jupiter.api.Assertions.*;
+package manager;
 
-import manager.TaskManager;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import task.*;
-
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
 
     @Test

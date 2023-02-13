@@ -1,19 +1,17 @@
+package http;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import manager.*;
+import manager.TaskManagerTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Status;
 import task.Task;
 import task.Type;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Duration;
 import java.time.LocalTime;
-
+import static handler.TaskHandler.createGson;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
@@ -25,7 +23,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         kvServer = new KVServer();
         kvServer.start();
         client = new KVTaskClient("http://localhost:8078");
-        manager = new HttpTaskManager(new URL("http://localhost:8080"));
+        manager = new HttpTaskManager(new URL("http://localhost:8078"));
     }
 
     @AfterEach
@@ -34,11 +32,8 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void save() throws MalformedURLException {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalTime.class, new LocalTimeAdapter());
-        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
-        Gson gson = gsonBuilder.create();
+    void save() {
+        Gson gson = createGson();
 
         Task task = new Task(1, Type.TASK, Status.NEW, "Уборка", "Подмести", LocalTime.of(10, 30), null);
         manager.createTask(task);

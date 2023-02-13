@@ -1,4 +1,4 @@
-package manager;
+package http;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 public class KVTaskClient {
     private HttpClient httpClient;
     private String apiToken;
-    private static String urlString;
+    private String urlString;
 
     public KVTaskClient(String urlString) {
         this.urlString = urlString;
@@ -28,7 +28,7 @@ public class KVTaskClient {
             HttpResponse<String> response = httpClient.send(request, handler);
             apiToken = response.body();
         } catch (InterruptedException | IOException exception) {
-            System.out.println("Ошибка регистрации на сервере");;
+            System.out.println("Ошибка регистрации на сервере");
         }
     }
 

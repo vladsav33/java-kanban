@@ -1,7 +1,6 @@
-import manager.KVServer;
-import manager.KVTaskClient;
-import org.junit.jupiter.api.*;
+package http;
 
+import org.junit.jupiter.api.*;
 import java.io.IOException;
 
 class KVTaskClientTest {

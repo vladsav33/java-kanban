@@ -1,11 +1,11 @@
-import manager.FileBackedTasksManager;
-import manager.HistoryManager;
-import manager.InMemoryHistoryManager;
+package manager;
+
+import history.HistoryManager;
+import history.InMemoryHistoryManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Task;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
